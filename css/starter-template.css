@@ -1,0 +1,19 @@
+body {
+  padding-top: 50px;
+}
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.form-container{
+  margin-left: 20px;
+  margin-top: 15%;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: flex-start;
+}
+.form-horizontal {
+  width: 50%;
+}
