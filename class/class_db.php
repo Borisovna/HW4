@@ -20,7 +20,14 @@ class my_db
         /* очищаем результирующий набор */
         $result->close ();
     }
-    
+    public function del_all($id){
+        $this->connect ();//проверяем если нет соеденения создаем
+        $mysqli = new mysqli($this->host, $this->user, $this->password, $this->databaseName);
+        $mysqli->query ('DELETE FROM table_reg WHERE id_user ='.$id.';');
+        $mysqli->query ('DELETE FROM table_info_user WHERE id_user ='.$id.';');
+        $mysqli->query ('DELETE FROM table_phpto WHERE id_user ='.$id.';');
+        
+    }
     //выборка с базы согл.запросу
     
     public function connect ()
