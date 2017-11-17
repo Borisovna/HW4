@@ -8,7 +8,20 @@ class my_db
     private $password = '';
     
     //подключение к базе
+    public function connect ()
+    {
+        $mysqli = mysqli_init ();
+        if (!$mysqli) {
+            die('mysqli_init завершилась провалом');
+        };
+        if (!$mysqli->real_connect ($this->host, $this->user, $this->password, $this->databaseName)) {
+            die('Ошибка подключения (' . mysqli_connect_errno () . ') '
+                . mysqli_connect_error ());
+        }
+//        echo 'Выполнено... ' . $mysqli->host_info . "\n";
+    }
     
+    //выборка с базы согл.запросу
     public function select_db ($query)
     {
         if (!$this->connect ())
@@ -24,24 +37,29 @@ class my_db
         $this->connect ();//проверяем если нет соеденения создаем
         $mysqli = new mysqli($this->host, $this->user, $this->password, $this->databaseName);
         $mysqli->query ('DELETE FROM table_reg WHERE id_user ='.$id.';');
-        $mysqli->query ('DELETE FROM table_info_user WHERE id_user ='.$id.';');
+        $mysqli->query ('DELETE FROM table_info_user WHERE id_user_reg ='.$id.';');
         $mysqli->query ('DELETE FROM table_phpto WHERE id_user ='.$id.';');
+        $id_path = $this->select_db ("SELECT path_photo FROM table_phpto WHERE id_user=$id;");
+        for ($a = 0; $a < count ($id_path); $a++) {
+            echo $id_path[$a][0];
+            unlink ($id_path[$a][0]);
+        }
         
     }
-    //выборка с базы согл.запросу
     
-    public function connect ()
-    {
-        $mysqli = mysqli_init ();
-        if (!$mysqli) {
-            die('mysqli_init завершилась провалом');
-        };
-        if (!$mysqli->real_connect ($this->host, $this->user, $this->password, $this->databaseName)) {
-            die('Ошибка подключения (' . mysqli_connect_errno () . ') '
-                . mysqli_connect_error ());
+    public function del_img($id_photo){
+        $this->connect ();//проверяем если нет соеденения создаем
+        $mysqli = new mysqli($this->host, $this->user, $this->password, $this->databaseName);
+        $id_path = $this->select_db ("SELECT path_photo FROM table_phpto WHERE id_photo=$id_photo;");
+        for ($a = 0; $a < count ($id_path); $a++) {
+            echo $id_path[$a][0];
+            unlink ($id_path[$a][0]);
         }
-//        echo 'Выполнено... ' . $mysqli->host_info . "\n";
+        $mysqli->query ('DELETE FROM table_phpto WHERE id_photo ='.$id_photo.';');
     }
+    
+    
+    
     
     //добавление в базу значений, заполнение
     public function insert ($table, $param)
@@ -49,12 +67,12 @@ class my_db
         $mysqli = new mysqli($this->host, $this->user, $this->password, $this->databaseName);
         for ($i = 0; $i < count ($param); $i++) {
             $param_values[$i] = "'" . array_values ($param)[$i] . "'";
-            echo '<br>'.$param_values[$i].'<br>';
+//            echo '<br>'.$param_values[$i].'<br>';
         }
         $fields = implode (', ', array_keys ($param));//массив ключей массива
         $values = implode (', ', $param_values);//массив значений массива
-        print_r ($fields);
-        print_r ($values);
+//        print_r ($fields);
+//        print_r ($values);
         $mysqli->query ("INSERT INTO {$table} ({$fields}) VALUES({$values});");
         mysqli_close ($mysqli);
     }
@@ -84,10 +102,10 @@ class my_db
             $values[$i] = "'" . $this->clean ((array_values ($param))[$i]) . "'";//массив значений массива
         }
         $fields =  array_keys ($param);//массив ключей массива
-        print_r ($fields);
-        print_r ($values);
+//        print_r ($fields);
+//        print_r ($values);
         for ($i=0;$i<count ($fields);$i++){
-            echo $i.' зашел в цикл !';
+//            echo $i.' зашел в цикл !';
             $mysqli->query ("UPDATE {$table} SET {$fields[$i]}={$values[$i]} WHERE $field_where =('{$where}');");
         }
         
@@ -101,7 +119,6 @@ class my_db
         $mysqli = new mysqli($this->host, $this->user, $this->password, $this->databaseName);
         $rez = $mysqli->query ("SELECT count(*) FROM {$table} WHERE {$field}=('{$value}');");
         $item = $rez->fetch_assoc ();
-//        print_r ($rez->fetch_assoc ());
         if ($item['count(*)'] == 0) {
             return true;
         } else {

@@ -1,27 +1,28 @@
 <?php
-session_start ();
+//session_start ();
 require_once 'class/class_db.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $db = new my_db();
     $db->connect ();
     $login = $db->clean ($_POST['login']);
     $hash_pass = crypt ($db->clean ($_POST['pass']), '22/02/10');
-    setcookie ('login', $login, time () + 60 * 60 * 24 * 30, '/');
-    setcookie ('pass', $hash_pass, time () + 60 * 60 * 24 * 30, '/');
-    $_SESSION['login'] = $login;
-    $_SESSION['pass'] = $hash_pass;
+//    setcookie ('login', $login, time () + 60 * 60 * 24 * 30, '/');
+//    setcookie ('pass', $hash_pass, time () + 60 * 60 * 24 * 30, '/');
+//    $_SESSION['login'] = $login;
+//    $_SESSION['pass'] = $hash_pass;
     if ($_POST['pass'] == $_POST['pass2']) {
         $table = 'table_reg';
         $field = 'login';
         $value = $_POST[$field];
         if (($db->ynik_user ($table, $field, $value)) == true) {
+            print_r ($_POST);
             foreach ($_POST as $key => $val) {
                 switch ($key) {
                     case 'login':
                         $params[$key] = $db->clean ($val);
                         break;
                     case 'pass':
-                        $params[$key] = crypt ($db->clean (array_values ($val)), '22/02/10');
+                        $params[$key] = crypt ($db->clean ($val), '22/02/10');
                         break;
                     case 'pass2':
                         break;
@@ -83,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <li><a href="index.php">Авторизация</a></li>
                 <li class="active"><a href="reg.php">Регистрация</a></li>
                 <li><a href="list.php">Список пользователей</a></li>
-                <li><a href="filelist.html">Список файлов</a></li>
+                <li><a href="filelist.php">Список файлов</a></li>
                 <li><a href="private_office.php">Личный кабинет</a></li>
             </ul>
         </div><!--/.nav-collapse -->

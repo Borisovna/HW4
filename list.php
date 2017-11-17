@@ -1,14 +1,11 @@
 <?php
 require_once 'class/class_db.php';
 $db = new my_db();
-if(isset($_POST)){
-    $mas=array_keys($_POST);
-    $id=$mas[0];
-    $db->del_all($id);
-//    echo 'Удалились';
-//    echo '<pre>';
-//    print_r ($mas[0]);
-//    echo '</pre>';
+if(!empty($_POST)) {
+    $mas = array_keys ($_POST);
+    $id = $mas[0];
+    echo $id;
+    $db->del_all ($id);//удаление пользователей и всех его фото
 }
 ?>
 
@@ -57,8 +54,8 @@ if(isset($_POST)){
             <ul class="nav navbar-nav">
                 <li><a href="index.php">Авторизация</a></li>
                 <li><a href="reg.php">Регистрация</a></li>
-                <li class="active"><a href="list.html">Список пользователей</a></li>
-                <li><a href="filelist.html">Список файлов</a></li>
+                <li class="active"><a href="list.php">Список пользователей</a></li>
+                <li><a href="filelist.php">Список файлов</a></li>
                 <li><a href="private_office.php">Личный кабинет</a></li>
             </ul>
         </div><!--/.nav-collapse -->
@@ -74,7 +71,7 @@ if(isset($_POST)){
             <th>Имя</th>
             <th>возраст</th>
             <th>описание</th>
-            <th>Кол-во фотографий</th>
+            <th>фото</th>
             <th>Действия</th>
         </tr>
         
@@ -88,7 +85,7 @@ if(isset($_POST)){
 //            print_r ($sel_id);
             for ($j = 0; $j < count ($sel_id); $j++) {
                 echo '<tr>';
-                $query_user = 'SELECT r.id_user,r.login,i.name,i.age,i.description,count(p.path_photo) FROM table_reg as r
+                $query_user = 'SELECT r.id_user,r.login,i.name,i.age,i.description,count(p.path_photo),p.path_photo FROM table_reg as r
         LEFT JOIN table_info_user as i on r.id_user=i.id_user_reg
         LEFT JOIN table_phpto as p  on r.id_user=p.id_user
         WHERE r.id_user=' . $sel_id[$j] . ';';
@@ -99,9 +96,9 @@ if(isset($_POST)){
                 echo '<td>' . $sel_user[0][2] . '</td>';
                 echo '<td>' . $sel_user[0][3] . '</td>';
                 echo '<td>' . $sel_user[0][4] . '</td>';
-                echo '<td>' . $sel_user[0][5] . '</td>';
+                echo '<td><img style="max-width: 100px; max-height: 100px" src=" ' . $sel_user[0][6] . '" alt=""> <br> Всего у юзера фоток :' .$sel_user[0][5] . 'шт.</td>';
                 echo "<td>
-                        <form action='' method='post'>
+                        <form action method='post'>
                             <button type='submit' class='btn btn-default' name='" . $sel_user[0][0] . "'>Удалить пользователя</button>
                         </form>
                    </td>";
