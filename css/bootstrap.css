@@ -27,6 +27,9 @@ section,
 summary {
   display: block;
 }
+form-container{
+  margin-top: 100px;
+}
 audio,
 canvas,
 progress,
@@ -3057,6 +3060,7 @@ fieldset[disabled] a.btn {
   pointer-events: none;
 }
 .btn-default {
+  margin-top: 10px;
   color: #333;
   background-color: #fff;
   border-color: #ccc;

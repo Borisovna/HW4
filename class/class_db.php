@@ -7,6 +7,7 @@ class my_db
     private $user = 'root';
     private $password = '';
     
+    
     //подключение к базе
     public function connect ()
     {
@@ -75,6 +76,7 @@ class my_db
 //        print_r ($values);
         $mysqli->query ("INSERT INTO {$table} ({$fields}) VALUES({$values});");
         mysqli_close ($mysqli);
+//        header('Location: list.php');
     }
     
     // очистка вврдимых данных
@@ -110,6 +112,7 @@ class my_db
         }
         
         mysqli_close ($mysqli);
+//        header('Location: list.php');
         
     }
     
