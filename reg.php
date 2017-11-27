@@ -1,42 +1,28 @@
 <?php
 require_once 'class/class_db.php';
+session_start();
+$db = new my_db();
+$db->connect();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-//    session_start ();
-    $db = new my_db();
-    $db->connect ();
-    $login = $db->clean ($_POST['login']);
-    $hash_pass = crypt ($db->clean ($_POST['pass']), '22/02/10');
-    setcookie ('login',$login,time ()+60*60);
-    setcookie ('pass',$hash_pass,time ()+60*60);
-   if ($_POST['pass'] == $_POST['pass2']) {
-        $table = 'table_reg';
-        $field = 'login';
-        $value = $_POST[$field];
-        if (($db->ynik_user ($table, $field, $value)) == true) {
-            print_r ($_POST);
-            foreach ($_POST as $key => $val) {
-                switch ($key) {
-                    case 'login':
-                        $params[$key] = $db->clean ($val);
-                        break;
-                    case 'pass':
-                        $params[$key] = crypt ($db->clean ($val), '22/02/10');
-                        break;
-                    case 'pass2':
-                        break;
-                }
-            }
-            $db->insert ($table, $params);
-        } else {
-            header('Location: list.php');
-            echo 'Вы у нас уже были!!!!';
-        }
-    } else {
-        echo 'Пароли не соотвествуют друг другу!';
-        
-    };
+    $params['login'] = $db->clean($_POST['login']);
+    $params['pass'] = crypt($db->clean($_POST['pass']), '2202');
+    $passwordconf = crypt($db->clean($_POST['pass2']), '2202');
+    if ($params['pass'] != $passwordconf){
+        echo "Пароли не совпадают";
+        exit();
+    }
+    //регистрировался такой пользователь ранее
+    if(($db->ynik_user('table_reg', 'login', $params['login'])) == true){
+        //если нет записать его в таблицу регистрации
+        $db->insert($table, $params);
+        $id_user=$db->select_db("SELECT id_user FROM $table WHERE login='".$params['login']."';");
+        $_SESSION['id_user']=$id_user[0][0];
+    }else{
+        //перенаправить на просмотр таблицы
+        header('Location: list.php');
+     }
 }
-require_once ('header.php');
+require_once('header.php');
 ?>
 
 <div class="container">

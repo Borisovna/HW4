@@ -1,3 +1,5 @@
 <?php
-setcookie('login', $_COOKIE['login'], time()-3600,'/');
-header('Location: reg.php');
+
+    session_start();
+    unset($_SESSION['id_user']);
+    header('Location:reg.php');

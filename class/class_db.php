@@ -6,9 +6,7 @@ class my_db
     private $host = 'localhost';
     private $user = 'root';
     private $password = '';
-    
-    
-    //подключение к базе
+        //подключение к базе
     public function connect ()
     {
         $mysqli = mysqli_init ();
@@ -21,8 +19,7 @@ class my_db
         }
 //        echo 'Выполнено... ' . $mysqli->host_info . "\n";
     }
-    
-    //выборка с базы согл.запросу
+        //выборка с базы согл.запросу
     public function select_db ($query)
     {
         if (!$this->connect ())
@@ -34,6 +31,7 @@ class my_db
         /* очищаем результирующий набор */
         $result->close ();
     }
+    //удаление пользователя всей инфо о нем, и фотки тоже
     public function del_all($id){
         $this->connect ();//проверяем если нет соеденения создаем
         $mysqli = new mysqli($this->host, $this->user, $this->password, $this->databaseName);
@@ -47,7 +45,7 @@ class my_db
         }
         
     }
-    
+    // удаление только одной фото
     public function del_img($id_photo){
         $this->connect ();//проверяем если нет соеденения создаем
         $mysqli = new mysqli($this->host, $this->user, $this->password, $this->databaseName);
@@ -58,10 +56,6 @@ class my_db
         }
         $mysqli->query ('DELETE FROM table_phpto WHERE id_photo ='.$id_photo.';');
     }
-    
-    
-    
-    
     //добавление в базу значений, заполнение
     public function insert ($table, $param)
     {
@@ -78,7 +72,6 @@ class my_db
         mysqli_close ($mysqli);
 //        header('Location: list.php');
     }
-    
     // очистка вврдимых данных
     public function clean ($value = "")
     {
@@ -95,7 +88,6 @@ class my_db
         
         return $value;
     }
-    
     //метод обновления данных
     public function update ($table, $param,$field_where, $where = null)
     {
@@ -115,8 +107,7 @@ class my_db
 //        header('Location: list.php');
         
     }
-    
-    //подсчет кол-во значений $value по полю $field в таблице $table
+    //подсчет кол-во значений $value по полю $field в таблице $table, проверка на уникальность пользователя
     public function ynik_user ($table, $field, $value)
     {
         $mysqli = new mysqli($this->host, $this->user, $this->password, $this->databaseName);

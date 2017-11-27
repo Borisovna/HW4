@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once ('header.php');
 require_once 'class/class_db.php';
 $db = new my_db();

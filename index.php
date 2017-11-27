@@ -1,31 +1,31 @@
 <?php
-//session_start ();
-require_once ('header.php');
+session_start();
 require_once 'class/class_db.php';
-//setcookie('login', $_COOKIE['login'], time()-3600);
-if (!empty($_POST)) {
-    $_SESSION['login'] = $_POST['login'];
-    $_SESSION['pass'] = $_POST['pass'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $db = new my_db();
-    $db->connect ();
-    $param_insert=[
-       'login'=>$db->clean ($_POST['login']),
-        'pass'=>crypt ($db->clean ($_POST['pass']), '22/02/10'),
-    ];
-    setcookie ('login','',time ()-3600,'/');
-//    setcookie ('login', $param_insert['login'], time () + 60 * 60 * 24 * 30, '/');
-//    setcookie ('pass', $param_insert['pass'], time () + 60 * 60 * 24 * 30, '/');
-    $table = 'table_reg';
-    $field = 'login';
-    $value = $_POST[$field];
-    if (($db->ynik_user ($table, $field, $value)) == true) {
-        $db->insert ($table, $param_insert);
-        
+    $login = $db->clean($_POST['login']);
+    $pass = crypt($db->clean($_POST['pass']), '2202');
+    //проверяем был ли ранее пользователь зарегистрирован
+    if (($db->ynik_user('table_reg', 'login', $login)) == true) {
+        header('Location:reg.php');
+        //если нет, перенаправим на регистрацию
     } else {
-        echo 'Вы у нас уже были!!!!';
+        //если был зарегистрировал проверяем ввод пароля
+        $queri_pass = $db->select_db("SELECT pass FROM table_reg WHERE login='" . $login . "';");
+        $pass_basa = $queri_pass[0][0];
+        if ($pass != $pass_basa) {
+            echo 'пароль введен не верно!';
+            exit();
+        } else {
+            //если пароль введен верно , записываем id в сессию
+            $id_user = $db->select_db("SELECT id_user FROM table_reg WHERE login='" . $login . "';");
+            print_r($id_user);
+            $_SESSION['id_user'] = $id_user[0][0];
+            echo 'Вы у нас уже были!!!!';
+        }
     }
 }
-
+require('header.php');
 
 
 ?>
@@ -33,22 +33,22 @@ if (!empty($_POST)) {
 <div class="container">
 
     <div class="form-container" style="margin-top: 100px;">
-        <form class="form-horizontal" action="" method="post">
+        <form class="form-horizontal" action method="post">
             <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">Логин</label>
-                <div class="col-sm-10">
+                <div class="col-sm-10 col-lg-6">
                     <input type="text" class="form-control" id="inputEmail3" placeholder="Логин" name="login">
                 </div>
             </div>
             <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">Пароль</label>
-                <div class="col-sm-10">
+                <div class="col-sm-10 col-lg-6">
                     <input type="password" class="form-control" id="inputPassword3" placeholder="Пароль" name="pass">
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-default">Войти</button>
+                    <button type="submit" class="btn btn-default" name="go">Войти</button>
                     <br><br>
                     Нет аккаунта? <a href="reg.php">Зарегистрируйтесь</a>
                 </div>
