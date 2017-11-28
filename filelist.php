@@ -10,41 +10,39 @@ if(!empty($_POST)) {
     echo $id;
     $db->del_img ($id);//удаление пользователей  фото
 }
-?>
 
-    <div class="container" style="margin-top: 100px;">
-        <h1>Запретная зона, доступ только авторизированному пользователю</h1>
-        <h2>Информация выводится из списка файлов</h2>
+
+   echo '<div class="container" style="margin-top: 40px;">';
+    if (isset($_SESSION['id_user'])) {
+        echo '<h2>Информация выводится из списка файлов</h2>
         <table class="table table-bordered">
             <tr>
                 <th>Название файла</th>
                 <th>Фотография</th>
                 <th>Действия</th>
-            </tr>
-<?php
-$all_path = $db->select_db ('SELECT id_photo,path_photo FROM table_phpto;');
-//echo '<pre>';
-//print_r ($all_path);
-//echo $all_path[3][0];
-for ($i=0; $i < count ($all_path); $i++) {
-    $name_img = substr ((strrchr ($all_path[$i][1], "/")), 1);
-    echo "<tr>
+            </tr>';
+    
+        $all_path = $db->select_db('SELECT id_photo,path_photo FROM table_phpto;');
+        for ($i = 0; $i < count($all_path); $i++) {
+            $name_img = substr((strrchr($all_path[$i][1], "/")), 1);
+            echo "<tr>
               <td>$name_img</td>
-              <td><img style=' max-height: 100px; border-radius: 50%' src='".$all_path[$i][1]."'></td>
+              <td><img style=' max-height: 100px; border-radius: 50%' src='" . $all_path[$i][1] . "'></td>
               <td>
                    <form action='' method='post'>
                        <button type='submit' class='btn btn-default' name='" . $all_path[$i][0] . "'> Удалить фоточку </button>
                </form>
               </td>
         </tr>";
-          }
- ?>
-      
-      </table>
+        }
+        echo '</table>';
+    }else{
+        echo '<h1>Запретная зона, доступ только авторизированному пользователю</h1>';
+    }
 
-    </div><!-- /.container -->
+    echo '</div><!-- /.container -->';
 
-
+?>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

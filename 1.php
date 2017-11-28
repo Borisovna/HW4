@@ -1,5 +1,5 @@
 <?php
-
-    session_start();
-    unset($_SESSION['id_user']);
-    header('Location:reg.php');
+session_start();
+session_destroy();
+session_unset();
+header('Location: reg.php');

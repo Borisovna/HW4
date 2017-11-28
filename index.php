@@ -19,8 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             //если пароль введен верно , записываем id в сессию
             $id_user = $db->select_db("SELECT id_user FROM table_reg WHERE login='" . $login . "';");
-            print_r($id_user);
+//            print_r($id_user);
             $_SESSION['id_user'] = $id_user[0][0];
+            header('Location:list.php');
             echo 'Вы у нас уже были!!!!';
         }
     }

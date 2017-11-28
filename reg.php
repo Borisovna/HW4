@@ -14,12 +14,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //регистрировался такой пользователь ранее
     if(($db->ynik_user('table_reg', 'login', $params['login'])) == true){
         //если нет записать его в таблицу регистрации
-        $db->insert($table, $params);
-        $id_user=$db->select_db("SELECT id_user FROM $table WHERE login='".$params['login']."';");
+        $db->insert('table_reg', $params);
+        //получаем его id и записываем его в сессию
+        $id_user=$db->select_db("SELECT id_user FROM table_reg WHERE login='".$params['login']."';");
         $_SESSION['id_user']=$id_user[0][0];
+        header('Location: private_office.php');
     }else{
+        $id_user=$db->select_db("SELECT id_user FROM table_reg WHERE login='".$params['login']."';");
+        $_SESSION['id_user']=$id_user[0][0];
         //перенаправить на просмотр таблицы
-        header('Location: list.php');
+        header('Location: private_office.php');
      }
 }
 require_once('header.php');
@@ -31,13 +35,13 @@ require_once('header.php');
             <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">Логин</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="inputEmail3" placeholder="Логин" name="login">
+                    <input type="text" class="form-control"  placeholder="Логин" name="login">
                 </div>
             </div>
             <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">Пароль</label>
                 <div class="col-sm-10">
-                    <input type="password" class="form-control" id="inputPassword3" placeholder="Пароль" name="pass">
+                    <input type="password" class="form-control"  placeholder="Пароль" name="pass">
                 </div>
             </div>
             <div class="form-group">

@@ -1,5 +1,5 @@
 <?php
-
+require_once 'config.php';
 class my_db
 {
     private $databaseName = 'HW4';
@@ -80,7 +80,7 @@ class my_db
         $repquotes = array ("\-", "\+", "\#" );
 //        $value = htmlspecialchars ($value);//Преобразует специальные символы в HTML-сущности
         $value = trim( strip_tags( $value ) );//Удаляет пробелы (или другие символы) из начала и конца строки (Удаляет HTML и PHP-теги из строкиУдаляет пробелы (или другие символы) из начала и конца строки
-        $value = str_replace (" ", "", $value);//Заменяет все вхождения строки поиска на строку замены
+//        $value = str_replace (" ", "", $value);//Заменяет все вхождения строки поиска на строку замены
         $value = stripslashes ($value);// Удаляет экранирование символов
         $value = str_replace( $quotes, '', $value );
         $value = str_replace( $goodquotes, $repquotes, $value );
